@@ -5,46 +5,41 @@ const { PythonShell } = require('python-shell');
 const path = require('path');
 
 const app = express();
-
-// Middleware
-app.use(bodyParser.json());
 app.use(cors());
+app.use(bodyParser.json());
 
-// API endpoint to make predictions
+// Serve static files (for frontend)
+app.use(express.static(path.join(__dirname, '../frontend')));
+
+// Prediction endpoint
 app.post('/predict', (req, res) => {
-    const inputData = req.body;
+  const inputData = req.body;
 
-    // Options for PythonShell
-    const options = {
-        mode: 'text',
-        pythonPath: 'python', // Use 'python3' if on Linux/Mac
-        scriptPath: __dirname, // Path to the Python script
-        args: [JSON.stringify(inputData)],
-    };
+  const options = {
+    scriptPath: __dirname, // Points to the backend folder
+    pythonPath: 'python',  // Use 'python3' if on Linux/Mac
+    pythonOptions: ['-u'], // Unbuffered output
+    args: [JSON.stringify(inputData)]
+  };
 
-    // Run the Python script
-    PythonShell.run('predict.py', options, (err, results) => {
-        if (err) {
-            console.error(err);
-            return res.status(500).json({ error: 'Prediction failed' });
-        }
-
-        try {
-            // Parse the prediction result
-            const predictionResult = JSON.parse(results[0]);
-            const prediction = predictionResult.prediction[0]; // Extract the prediction value
-
-            // Send the prediction as a response
-            res.json({ prediction: prediction });
-        } catch (parseError) {
-            console.error('Error parsing prediction result:', parseError);
-            res.status(500).json({ error: 'Failed to parse prediction result' });
-        }
-    });
+  PythonShell.run('predict.py', options, (err, results) => {
+    if (err) {
+      console.error('PythonShell Error:', err);
+      return res.status(500).json({ error: 'Prediction failed', details: err.message });
+    }
+    
+    try {
+      const prediction = results[0];
+      res.json({ prediction: parseInt(prediction) }); // Ensure number output
+    } catch (e) {
+      console.error('Output Parse Error:', e);
+      res.status(500).json({ error: 'Invalid prediction output' });
+    }
+  });
 });
 
-// Start the server
-const PORT = 5000;
+// Start server
+const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
+  console.log(`Server running on http://localhost:${PORT}`);
 });
