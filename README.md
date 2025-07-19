@@ -1,13 +1,12 @@
 # 🧠 Mental Health Disorder Prediction System
 
 ## 📌 Project Overview
-This project is designed to assist counselors and patients in identifying potential mental health disorders based on selected symptoms. The system uses a Machine Learning model trained in Python (Jupyter Notebook) to predict mental health conditions and provide recommendations. The web interface is built using JavaScript and CSS to deliver a seamless user experience.
+This project is designed to assist counselors and patients in identifying potential mental health disorders based on selected symptoms. The system uses a Machine Learning model trained in Python (Jupyter Notebook) to predict mental health conditions and provide recommendations.
 
 ---
 
 ## 🎯 Key Features
 - **Machine Learning Model**: Trained using Python in Jupyter Notebook to predict mental disorders.
-- **User-Friendly Web Interface**: Developed using JavaScript and CSS for interactivity.
 - **Counselor & Patient Guidance**: Provides advice and suggested actions based on predictions.
 - **Dynamic Predictions**: Users input symptoms, and the system predicts possible disorders with recommendations.
 
